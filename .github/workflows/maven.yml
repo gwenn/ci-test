@@ -14,7 +14,9 @@ jobs:
     steps:
     - name: Install libsqlite3-dev
       if: matrix.os == 'ubuntu-latest'
-      run: sudo apt-get install libsqlite3-dev
+      run: |
+        sudo apt-get -q install libsqlite3-dev
+        sudo dpkg -L libsqlite3-dev
     - name: Install libsqlite3 dll
       if: matrix.os == 'windows-latest'
       run: choco install sqlite --params "/NoTools" --no-progress
@@ -30,6 +32,6 @@ jobs:
       if: matrix.os == 'windows-latest'
       shell: cmd
       run: |
-        set
+        path
         rem set JAVA_LIBRARY_PATH=C:\ProgramData\chocolatey\lib\SQLite\tools
         mvn -q -B test --file pom.xml
