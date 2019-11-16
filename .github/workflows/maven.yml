@@ -5,9 +5,22 @@ on: [push]
 jobs:
   build:
 
-    runs-on: ubuntu-latest
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, windows-latest]
 
     steps:
+    - name: Install libsqlite3-dev
+      if: matrix.os == 'ubuntu-latest'
+      run: sudo apt-get install libsqlite3-dev
+    - name: Install libsqlite3 dll
+      if: matrix.os == 'windows-latest'
+      shell: cmd
+      run: |
+          choco install sqlite --params "/NoTools" --no-progress
+          mklink "C:\ProgramData\Chocolatey\bin\sqlite3.dll" "C:\ProgramData\chocolatey\lib\SQLite\tools\sqlite3.dll"
     - uses: actions/checkout@v1
     - name: Set up JDK 1.8
       uses: actions/setup-java@v1
