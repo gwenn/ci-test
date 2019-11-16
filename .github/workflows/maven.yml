@@ -16,7 +16,8 @@ jobs:
       if: matrix.os == 'ubuntu-latest'
       run: |
         sudo apt-get -q install libsqlite3-dev
-        sudo dpkg -L libsqlite3-dev
+        apt-get --help
+        #dpkg -L libsqlite3-dev
     - name: Install libsqlite3 dll
       if: matrix.os == 'windows-latest'
       run: choco install sqlite --params "/NoTools" --no-progress
@@ -27,11 +28,11 @@ jobs:
         java-version: 1.8
     - name: Build with Maven
       if: matrix.os == 'ubuntu-latest'
-      run: JAVA_LIBRARY_PATH=/usr/lib mvn -q -B test --file pom.xml
+      run: JAVA_LIBRARY_PATH=/usr/lib/x86_64-linux-gnu/ mvn -q -B test --file pom.xml
     - name: Build with Maven
       if: matrix.os == 'windows-latest'
       shell: cmd
       run: |
-        path
-        rem set JAVA_LIBRARY_PATH=C:\ProgramData\chocolatey\lib\SQLite\tools
+        dir C:\ProgramData\chocolatey /s /b
+        set JAVA_LIBRARY_PATH=C:\ProgramData\chocolatey\lib\SQLite\tools
         mvn -q -B test --file pom.xml
