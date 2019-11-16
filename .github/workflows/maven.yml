@@ -14,29 +14,27 @@ jobs:
     steps:
     - name: Install libsqlite3-dev
       if: matrix.os == 'ubuntu-latest'
-      run: |
-        sudo apt-get -q install libsqlite3-dev
-        #dpkg -L libsqlite3-dev
+      run: sudo apt-get -q install libsqlite3-dev
     - name: Install libsqlite3 dll
       if: matrix.os == 'windows-latest'
-      #run: choco install sqlite --params "/NoTools" --no-progress
       run: vcpkg install sqlite3:x64-windows
-    - uses: actions/checkout@v1
+
     - name: Set up JDK 1.8
       uses: actions/setup-java@v1
       with:
         java-version: 1.8
+
+    - uses: actions/checkout@v1
+
     - name: Build with Maven
       if: matrix.os == 'ubuntu-latest'
       run: |
-        #ldd /usr/lib/x86_64-linux-gnu/libsqlite3.so # OK
         export LD_LIBRARY_PATH=/usr/lib/x86_64-linux-gnu
         JAVA_LIBRARY_PATH=/usr/lib/x86_64-linux-gnu mvn -q -B test --file pom.xml
     - name: Build with Maven
       if: matrix.os == 'windows-latest'
       shell: cmd
       run: |
-        rem dir %VCPKG_INSTALLATION_ROOT%\installed\x64-windows /s /b
         set JAVA_LIBRARY_PATH=C:\vcpkg\installed\x64-windows\bin\
         set PATH=%PATH%;%JAVA_LIBRARY_PATH%
         mvn -q -B test --file pom.xml
